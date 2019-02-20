@@ -20,13 +20,11 @@ class App extends Component {
     let arr = [];
     arr['bitcoin'] = 13;
     arr['ethereum'] = 11;
-
-    console.log(arr);
-    Object.keys(arr).map((value, index, arr) => {
-      console.log(value);
-      console.log(index);
-    })
-
+    let comp = []
+    for(let i in arr){
+      comp.push(<RatesTable name= {i} value={arr[i]}/>)
+    } 
+ 
     return (
       <div className="App">
             <header className="App-header">
@@ -35,7 +33,7 @@ class App extends Component {
             <article className="canvas-container">
               <table>
                 <tbody>
-                
+                {comp}
                 </tbody>
               </table>
             </article>
