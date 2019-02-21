@@ -1,30 +1,34 @@
 import React, { Component } from 'react';
 import RatesTable from './components/RatesTable';
-
+import openSocket from 'socket.io-client';
 import './App.css';
 
 class App extends Component {
   constructor(props){
     super(props);
     this.state = {
+      data:{}
     }
   }
   
-  componentDidMount(){
-    
+  componentDidMount(){  
+    this.subscribeToServer();
+  }
+  subscribeToServer() {
+    const socket = openSocket('http://localhost:8000');
+    socket.on('updateRates', data => this.setState({data:data}));
   }
   render(){
-    if(this.state===0)
-      return null;
+    let ListComponents = [];
 
-    let arr = [];
-    arr['bitcoin'] = 13;
-    arr['ethereum'] = 11;
-    let comp = []
-    for(let i in arr){
-      comp.push(<RatesTable name= {i} value={arr[i]}/>)
-    } 
- 
+    if(Object.keys(this.state.data).length===0){
+      ListComponents.push(<RatesTable name= 'Downloading data from server .....' value='' key='0' />);
+    }else{
+      for(let i in this.state.data){
+        ListComponents.push(<RatesTable name= {i} value={this.state.data[i]} key={this.state.data[i]}/>)
+      } 
+    }
+
     return (
       <div className="App">
             <header className="App-header">
@@ -33,7 +37,7 @@ class App extends Component {
             <article className="canvas-container">
               <table>
                 <tbody>
-                {comp}
+                {ListComponents}
                 </tbody>
               </table>
             </article>
